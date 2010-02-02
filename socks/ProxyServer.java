@@ -42,7 +42,7 @@ public class ProxyServer implements Runnable{
    static int acceptTimeout	= 180000; //3 minutes
 
    static PrintStream log = null;
-   static Proxy proxy;
+   static CProxy proxy;
 
 
 //Public Constructors
@@ -85,23 +85,23 @@ public class ProxyServer implements Runnable{
    /**
     Set proxy.
     <p>
-    Allows Proxy chaining so that one Proxy server is connected to another
+    Allows CProxy chaining so that one CProxy server is connected to another
     and so on. If proxy supports SOCKSv4, then only some SOCKSv5 requests
     can be handled, UDP would not work, however CONNECT and BIND will be
     translated.
 
-    @param p Proxy which should be used to handle user requests.
+    @param p CProxy which should be used to handle user requests.
    */
-   public static void setProxy(Proxy p){
+   public static void setProxy(CProxy p){
       proxy =p;
       UDPRelayServer.proxy = proxy;
    }
 
    /**
     Get proxy.
-    @return Proxy wich is used to handle user requests.
+    @return CProxy wich is used to handle user requests.
    */
-   public static Proxy getProxy(){
+   public static CProxy getProxy(){
       return proxy;
    }
 
@@ -144,7 +144,7 @@ public class ProxyServer implements Runnable{
 
 
    /**
-     Start the Proxy server at given port.<br>
+     Start the CProxy server at given port.<br>
      This methods blocks.
     */
    public void start(int port){
@@ -264,28 +264,28 @@ public class ProxyServer implements Runnable{
    private void handleRequest(ProxyMessage msg)
                 throws IOException{
       if(!auth.checkRequest(msg)) throw new 
-                                  SocksException(Proxy.SOCKS_FAILURE);
+                                  SocksException(CProxy.SOCKS_FAILURE);
 
       if(msg.ip == null){
         if(msg instanceof Socks5Message){
           msg.ip = InetAddress.getByName(msg.host);
         }else
-          throw new SocksException(Proxy.SOCKS_FAILURE);
+          throw new SocksException(CProxy.SOCKS_FAILURE);
       }
       log(msg);
 
       switch(msg.command){
-        case Proxy.SOCKS_CMD_CONNECT:
+        case CProxy.SOCKS_CMD_CONNECT:
           onConnect(msg);
         break;
-        case Proxy.SOCKS_CMD_BIND:
+        case CProxy.SOCKS_CMD_BIND:
           onBind(msg);
         break;
-        case Proxy.SOCKS_CMD_UDP_ASSOCIATE:
+        case CProxy.SOCKS_CMD_UDP_ASSOCIATE:
           onUDP(msg);
         break;
         default:
-          throw new SocksException(Proxy.SOCKS_CMD_NOT_SUPPORTED);
+          throw new SocksException(CProxy.SOCKS_CMD_NOT_SUPPORTED);
       }
    }
 
@@ -297,19 +297,19 @@ public class ProxyServer implements Runnable{
       //If the request was successfully completed, but exception happened later
       if(mode == PIPE_MODE) return;
 
-      int error_code = Proxy.SOCKS_FAILURE;
+      int error_code = CProxy.SOCKS_FAILURE;
 
       if(ioe instanceof SocksException)
           error_code = ((SocksException)ioe).errCode;
       else if(ioe instanceof NoRouteToHostException)
-          error_code = Proxy.SOCKS_HOST_UNREACHABLE;
+          error_code = CProxy.SOCKS_HOST_UNREACHABLE;
       else if(ioe instanceof ConnectException)
-          error_code = Proxy.SOCKS_CONNECTION_REFUSED;
+          error_code = CProxy.SOCKS_CONNECTION_REFUSED;
       else if(ioe instanceof InterruptedIOException)
-          error_code = Proxy.SOCKS_TTL_EXPIRE;
+          error_code = CProxy.SOCKS_TTL_EXPIRE;
 
-      if(error_code > Proxy.SOCKS_ADDR_NOT_SUPPORTED || error_code < 0){
-          error_code = Proxy.SOCKS_FAILURE; 
+      if(error_code > CProxy.SOCKS_ADDR_NOT_SUPPORTED || error_code < 0){
+          error_code = CProxy.SOCKS_FAILURE;
       }
 
       sendErrorMessage(error_code);
@@ -327,7 +327,7 @@ public class ProxyServer implements Runnable{
       log("Connected to "+s.getInetAddress()+":"+s.getPort());
 
       if(msg instanceof Socks5Message){
-        response = new Socks5Message(Proxy.SOCKS_SUCCESS,
+        response = new Socks5Message(CProxy.SOCKS_SUCCESS,
                                          s.getLocalAddress(),
                                          s.getLocalPort());
       }else{
@@ -352,7 +352,7 @@ public class ProxyServer implements Runnable{
       log("Trying accept on "+ss.getInetAddress()+":"+ss.getLocalPort());
 
       if(msg.version == 5)
-         response = new Socks5Message(Proxy.SOCKS_SUCCESS,ss.getInetAddress(),
+         response = new Socks5Message(CProxy.SOCKS_SUCCESS,ss.getInetAddress(),
                                                           ss.getLocalPort());
       else
          response = new Socks4Message(Socks4Message.REPLY_OK,
@@ -409,7 +409,7 @@ public class ProxyServer implements Runnable{
 
       ProxyMessage response;
 
-      response = new Socks5Message(Proxy.SOCKS_SUCCESS,
+      response = new Socks5Message(CProxy.SOCKS_SUCCESS,
                                    relayServer.relayIP,relayServer.relayPort);
 
       response.write(out);
@@ -442,7 +442,7 @@ public class ProxyServer implements Runnable{
             //We can't accept more then one connection
             s.close();
             ss.close();
-            throw new SocksException(Proxy.SOCKS_FAILURE);
+            throw new SocksException(CProxy.SOCKS_FAILURE);
          }else{
             if(acceptTimeout!=0){ //If timeout is not infinit
                int newTimeout = acceptTimeout-(int)(System.currentTimeMillis()-
@@ -468,7 +468,7 @@ public class ProxyServer implements Runnable{
       ProxyMessage response;
 
       if(msg.version == 5)
-         response = new Socks5Message(Proxy.SOCKS_SUCCESS, s.getInetAddress(),
+         response = new Socks5Message(CProxy.SOCKS_SUCCESS, s.getInetAddress(),
                                                            s.getPort());
       else
          response = new Socks4Message(Socks4Message.REPLY_OK,
@@ -494,7 +494,7 @@ public class ProxyServer implements Runnable{
       }else if(version == 4){
         msg = new Socks4Message(push_in,false);
       }else{
-        throw new SocksException(Proxy.SOCKS_FAILURE);
+        throw new SocksException(CProxy.SOCKS_FAILURE);
       }
       return msg;
    }

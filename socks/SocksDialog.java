@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 /**
   Socks configuration dialog.<br>
-  Class which provides GUI means of getting Proxy configuration
+  Class which provides GUI means of getting CProxy configuration
   from the user.
  */
 public class SocksDialog extends Dialog
@@ -41,7 +41,7 @@ public class SocksDialog extends Dialog
    //CheckboxGroups
    CheckboxGroup socks_group = new CheckboxGroup();
 
-   Proxy proxy;
+   CProxy proxy;
    InetRange ir;
 
    final static int COMMAND_MODE = 0;
@@ -69,8 +69,8 @@ public class SocksDialog extends Dialog
    /**
      Creates SOCKS configuration dialog.<br>
      Uses default initialisation:<br>
-     Proxy host: socks-proxy <br>
-     Proxy port: 1080 <br>
+     CProxy host: socks-proxy <br>
+     CProxy port: 1080 <br>
      Version: 5<br>
 
     */
@@ -81,7 +81,7 @@ public class SocksDialog extends Dialog
     Creates SOCKS configuration dialog and initialises it
     to given proxy.
     */
-   public SocksDialog(Frame parent,Proxy init_proxy){
+   public SocksDialog(Frame parent,CProxy init_proxy){
      super(parent,"Proxy Configuration",true);
      warning_dialog = new Dialog(parent,"Warning",true);
 
@@ -115,7 +115,7 @@ public class SocksDialog extends Dialog
      Returns initialised proxy object, or null if user cancels dialog
      by either pressing Cancel or closing the dialog window.
     */
-   public Proxy getProxy(){
+   public CProxy getProxy(){
       mode = COMMAND_MODE;
       pack();
       show();
@@ -128,7 +128,7 @@ public class SocksDialog extends Dialog
      Returns initialised proxy object, or null if user cancels dialog
      by either pressing Cancel or closing the dialog window.
     */
-    public Proxy getProxy(Proxy p){
+    public CProxy getProxy(CProxy p){
       if(p != null){
          doInit(p);
       }
@@ -336,7 +336,7 @@ public class SocksDialog extends Dialog
      }
    }
 
-   private void doInit(Proxy p){
+   private void doInit(CProxy p){
      if(p.version == 5){
        socks_group.setSelectedCheckbox(socks5radio);
        onSocksChange();
@@ -607,7 +607,7 @@ public class SocksDialog extends Dialog
       f.pack();
       f.show();
       f.addWindowListener(socksdialog);
-      Proxy p = socksdialog.getProxy();
+      CProxy p = socksdialog.getProxy();
       System.out.println("Selected: "+p);
    }
 */

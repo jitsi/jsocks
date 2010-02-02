@@ -9,7 +9,7 @@ import java.io.*;
 */
 public class SocksServerSocket extends ServerSocket{
    //Data members
-   protected Proxy proxy;
+   protected CProxy proxy;
    protected String localHost;
    protected InetAddress localIP;
    protected int localPort;
@@ -19,27 +19,27 @@ public class SocksServerSocket extends ServerSocket{
 
    /**
     * Creates ServerSocket capable of accepting one connection
-    * through the firewall, uses default Proxy.
+    * through the firewall, uses default CProxy.
     *@param host Host from which the connection should be recieved.
     *@param port Port number of the primary connection.
     */
    public SocksServerSocket(String host,int port)
 	  throws SocksException,UnknownHostException,IOException{
-      this(Proxy.defaultProxy,host,port);
+      this(CProxy.defaultProxy,host,port);
    }
    /**
     *Creates ServerSocket capable of accepting one connection
     *through the firewall, uses given proxy.
-    *@param p    Proxy object to use.
+    *@param p    CProxy object to use.
     *@param host Host from which the connection should be recieved.
     *@param port Port number of the primary connection.
     */
-   public SocksServerSocket(Proxy p,String host,int port)
+   public SocksServerSocket(CProxy p,String host,int port)
 	  throws SocksException,UnknownHostException,IOException{
 
 
       super(0);
-      if(p == null) throw new SocksException(Proxy.SOCKS_NO_PROXY);
+      if(p == null) throw new SocksException(CProxy.SOCKS_NO_PROXY);
       //proxy=p;
       proxy = p.copy();
       if(proxy.isDirect(host)){
@@ -53,27 +53,27 @@ public class SocksServerSocket extends ServerSocket{
 
    /**
     * Creates ServerSocket capable of accepting one connection
-    * through the firewall, uses default Proxy.
+    * through the firewall, uses default CProxy.
     *@param ip Host from which the connection should be recieved.
     *@param port Port number of the primary connection.
     */
    public SocksServerSocket(InetAddress ip, int port) throws SocksException,
                                                              IOException{
-      this(Proxy.defaultProxy,ip,port);
+      this(CProxy.defaultProxy,ip,port);
    }
 
    /**
     *Creates ServerSocket capable of accepting one connection
     *through the firewall, uses given proxy.
-    *@param p    Proxy object to use.
+    *@param p    CProxy object to use.
     *@param ip   Host from which the connection should be recieved.
     *@param port Port number of the primary connection.
     */
-   public SocksServerSocket(Proxy p,InetAddress ip, int port)
+   public SocksServerSocket(CProxy p,InetAddress ip, int port)
           throws SocksException,IOException{
       super(0);
 
-      if(p == null) throw new SocksException(Proxy.SOCKS_NO_PROXY);
+      if(p == null) throw new SocksException(CProxy.SOCKS_NO_PROXY);
       this.proxy = p.copy();
 
       if(proxy.isDirect(ip)){

@@ -5,7 +5,7 @@ import socks.*;
 
 public class TestClient extends TestService{
    /** Proxy which should be used*/
-   Proxy proxy;
+   CProxy proxy;
    /** Host on which TestServer is running*/
    String testHost;
 
@@ -15,7 +15,7 @@ public class TestClient extends TestService{
    BufferedReader in;
    Writer out;
 
-   public TestClient(Proxy p,String testHost){
+   public TestClient(CProxy p,String testHost){
       this.proxy = p;
       this.testHost = testHost;
       if(log == null) log = System.out;
@@ -182,14 +182,14 @@ public class TestClient extends TestService{
       "Usage: java Testclient testhost proxy [directhosts]");
    }
 
-   static Proxy initProxy(String ps){
+   static CProxy initProxy(String ps){
       java.util.StringTokenizer st = new java.util.StringTokenizer(ps,",;");
-      Proxy proxy = null;
+      CProxy proxy = null;
       while(st.hasMoreElements()){
          String entry = st.nextToken();
-         Proxy p = Proxy.parseProxy(entry);
+         CProxy p = CProxy.parseProxy(entry);
          if( p == null){
-           log("Proxy "+entry+" invalid.");
+           log("CProxy "+entry+" invalid.");
            return null;
          }
          p.setChainProxy(proxy);
@@ -197,7 +197,7 @@ public class TestClient extends TestService{
       }
       return proxy;
    }
-   static void addDirectHosts(Proxy p, String directHosts){
+   static void addDirectHosts(CProxy p, String directHosts){
       java.util.StringTokenizer st = new java.util.StringTokenizer(
                                          directHosts,",;");
 
@@ -220,7 +220,7 @@ public class TestClient extends TestService{
       String proxyHost = argv[1];
       String directHosts = argv.length >2 ? argv[2] : null;
 
-      Proxy p = initProxy(proxyHost);
+      CProxy p = initProxy(proxyHost);
       if(p == null){
          log("Can't init proxy.");
          return;

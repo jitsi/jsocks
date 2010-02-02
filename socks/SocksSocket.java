@@ -7,7 +7,7 @@ import java.io.*;
  * SocksSocket tryies to look very similar to normal Socket,
  * while allowing connections through the SOCKS4 or 5 proxy.
  * To use this class you will have to identify proxy you need
- * to use, Proxy class allows you to set default proxy, which
+ * to use, CProxy class allows you to set default proxy, which
  * will be used by all Socks aware sockets. You can also create
  * either Socks4Proxy or Socks5Proxy, and use them by passing to the 
  * appropriate constructors.
@@ -21,11 +21,11 @@ import java.io.*;
  *
  *     try{
  *        //Specify SOCKS5 proxy
- *        Proxy.setDefaultProxy("socks-proxy",1080);
+ *        CProxy.setDefaultProxy("socks-proxy",1080);
  *
  *        //OR you still use SOCKS4
  *        //Code below uses SOCKS4 proxy
- *        //Proxy.setDefaultProxy("socks-proxy",1080,userName);
+ *        //CProxy.setDefaultProxy("socks-proxy",1080,userName);
  *
  *        Socket s = SocksSocket("some.host.of.mine",13);
  *        readTimeFromSock(s);
@@ -42,7 +42,7 @@ import java.io.*;
 
 public class SocksSocket extends Socket{
    //Data members
-   protected Proxy proxy;
+   protected CProxy proxy;
    protected String localHost, remoteHost;
    protected InetAddress localIP, remoteIP;
    protected int localPort,remotePort;
@@ -55,32 +55,32 @@ public class SocksSocket extends Socket{
     * it throws SocksException with error code SOCKS_NO_PROXY.
       @param host Machine to connect to.
       @param port Port to which to connect.
-    * @see SocksSocket#SocksSocket(Proxy,String,int)
+    * @see SocksSocket#SocksSocket(CProxy,String,int)
     * @see Socks5Proxy#resolveAddrLocally
     */
    public SocksSocket(String host,int port)
 	  throws SocksException,UnknownHostException{
-      this(Proxy.defaultProxy,host,port);
+      this(CProxy.defaultProxy,host,port);
    }
    /**
     * Connects to host port using given proxy server.
-      @param p Proxy to use.
+      @param p CProxy to use.
       @param host Machine to connect to.
       @param port Port to which to connect.
       @throws UnknownHostException 
       If one of the following happens:
       <ol>
 
-      <li> Proxy settings say that address should be resolved locally, but
+      <li> CProxy settings say that address should be resolved locally, but
            this fails.
-      <li> Proxy settings say that the host should be contacted directly but
+      <li> CProxy settings say that the host should be contacted directly but
            host name can't be resolved. 
       </ol>
       @throws SocksException
       If one of the following happens:
       <ul>
-       <li> Proxy is is null.
-       <li> Proxy settings say that the host should be contacted directly but
+       <li> CProxy is is null.
+       <li> CProxy settings say that the host should be contacted directly but
             this fails.
        <li> Socks Server can't be contacted.
        <li> Authentication fails.
@@ -92,11 +92,11 @@ public class SocksSocket extends Socket{
       @throws IOexception if anything is wrong with I/O.
       @see Socks5Proxy#resolveAddrLocally
     */
-   public SocksSocket(Proxy p,String host,int port)
+   public SocksSocket(CProxy p,String host,int port)
 	  throws SocksException,UnknownHostException{
 
 
-      if(p == null) throw new SocksException(Proxy.SOCKS_NO_PROXY);
+      if(p == null) throw new SocksException(CProxy.SOCKS_NO_PROXY);
       //proxy=p;
       proxy = p.copy();
       remoteHost = host;
@@ -116,21 +116,21 @@ public class SocksSocket extends Socket{
     * it throws SocksException with error code SOCKS_NO_PROXY.
       @param ip Machine to connect to.
       @param port Port to which to connect.
-    * @see SocksSocket#SocksSocket(Proxy,String,int)
+    * @see SocksSocket#SocksSocket(CProxy,String,int)
     */
    public SocksSocket(InetAddress ip, int port) throws SocksException{
-      this(Proxy.defaultProxy,ip,port);
+      this(CProxy.defaultProxy,ip,port);
    }
 
    /**
-      Connects to given ip and port using given Proxy server.
-      @param p Proxy to use.
+      Connects to given ip and port using given CProxy server.
+      @param p CProxy to use.
       @param ip Machine to connect to.
       @param port Port to which to connect.
 
     */
-   public SocksSocket(Proxy p,InetAddress ip, int port) throws SocksException{
-      if(p == null) throw new SocksException(Proxy.SOCKS_NO_PROXY);
+   public SocksSocket(CProxy p,InetAddress ip, int port) throws SocksException{
+      if(p == null) throw new SocksException(CProxy.SOCKS_NO_PROXY);
       this.proxy = p.copy();
       this.remoteIP = ip;
       this.remotePort = port;
@@ -146,14 +146,14 @@ public class SocksSocket extends Socket{
     * These 2 constructors are used by the SocksServerSocket.
     * This socket simply overrides remoteHost, remotePort
     */
-   protected SocksSocket(String  host,int port,Proxy proxy){
+   protected SocksSocket(String  host,int port,CProxy proxy){
       this.remotePort = port;
       this.proxy = proxy;
       this.localIP = proxy.proxySocket.getLocalAddress();
       this.localPort = proxy.proxySocket.getLocalPort();
       this.remoteHost = host;
    }
-   protected SocksSocket(InetAddress ip,int port,Proxy proxy){
+   protected SocksSocket(InetAddress ip,int port,CProxy proxy){
       remoteIP = ip;
       remotePort = port;
       this.proxy = proxy;
@@ -324,7 +324,7 @@ public class SocksSocket extends Socket{
          localIP = directSock.getLocalAddress();
          localPort = directSock.getLocalPort();
       }catch(IOException io_ex){
-         throw new SocksException(Proxy.SOCKS_DIRECT_FAILED,
+         throw new SocksException(CProxy.SOCKS_DIRECT_FAILED,
                                   "Direct connect failed:"+io_ex);
       }
    }

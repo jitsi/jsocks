@@ -126,9 +126,9 @@ public class IdentAuthenticator extends ServerAuthenticatorNone{
 //////////////////
   private int getRangeIndex(InetAddress ip){
      int index = 0;
-     Enumeration enum = hosts.elements();
-     while(enum.hasMoreElements()){
-       InetRange ir = (InetRange) enum.nextElement();
+     Enumeration eEnum = hosts.elements();
+     while(eEnum.hasMoreElements()){
+       InetRange ir = (InetRange) eEnum.nextElement();
        if(ir.contains(ip)) return index;
        index++;
      }
@@ -138,11 +138,11 @@ public class IdentAuthenticator extends ServerAuthenticatorNone{
   private String userNames(int i){
     if(users.elementAt(i) == null) return "Everybody is permitted.";
 
-    Enumeration enum = ((Hashtable)users.elementAt(i)).keys();
-    if(!enum.hasMoreElements()) return "";
-    String s = enum.nextElement().toString();
-    while(enum.hasMoreElements())
-       s += "; "+enum.nextElement();
+    Enumeration eEnum = ((Hashtable)users.elementAt(i)).keys();
+    if(!eEnum.hasMoreElements()) return "";
+    String s = eEnum.nextElement().toString();
+    while(eEnum.hasMoreElements())
+       s += "; "+eEnum.nextElement();
 
     return s;
   }

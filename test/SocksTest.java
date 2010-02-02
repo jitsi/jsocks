@@ -1,4 +1,4 @@
-package test_util;
+package test;
 import java.net.*;
 import java.io.*;
 import socks.*;
@@ -76,9 +76,13 @@ public class SocksTest implements Runnable{
 	     proxyHost =(args.length > 2)? args[2]
 	                                 : defaultProxyHost;
 
-	     Proxy.setDefaultProxy(proxyHost,proxyPort,"KOUKY001");
+	     CProxy.setDefaultProxy(proxyHost,proxyPort,"KOUKY001");
 	     //Proxy.setDefaultProxy(proxyHost,proxyPort);
-	     Proxy.getDefaultProxy().setDirect(InetAddress.getByName("localhost"));
+	     
+             //rsimac: commented out below line to make the source compile on java 1.6
+             //I believe below line was -only- disabling the proxy for localhost.
+             //TBD understand and fix properly
+             //CProxy.getDefaultProxy().setDirect(InetAddress.getByName("localhost"));
 
 
 	     SocksTest st = new SocksTest(host,port);

@@ -5,10 +5,10 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 
 /**
-  Proxy which describes SOCKS4 proxy.
+  CProxy which describes SOCKS4 proxy.
 */
 
-public class Socks4Proxy extends Proxy implements Cloneable{
+public class Socks4Proxy extends CProxy implements Cloneable{
 
 //Data members
    String user;
@@ -18,13 +18,13 @@ public class Socks4Proxy extends Proxy implements Cloneable{
 
    /**
      Creates the SOCKS4 proxy
-     @param p Proxy to use to connect to this proxy, allows proxy chaining.
+     @param p CProxy to use to connect to this proxy, allows proxy chaining.
      @param proxyHost Address of the proxy server.
      @param proxyPort Port of the proxy server
      @param user User name to use for identification purposes.
      @throws UnknownHostException If proxyHost can't be resolved.
     */
-   public Socks4Proxy(Proxy p,String proxyHost,int proxyPort,String user)
+   public Socks4Proxy(CProxy p,String proxyHost,int proxyPort,String user)
           throws UnknownHostException{ 
       super(p,proxyHost,proxyPort);
       this.user = new String(user);
@@ -45,12 +45,12 @@ public class Socks4Proxy extends Proxy implements Cloneable{
 
    /**
      Creates the SOCKS4 proxy
-     @param p Proxy to use to connect to this proxy, allows proxy chaining.
+     @param p CProxy to use to connect to this proxy, allows proxy chaining.
      @param proxyIP Address of the proxy server.
      @param proxyPort Port of the proxy server
      @param user User name to use for identification purposes.
     */
-   public Socks4Proxy(Proxy p,InetAddress proxyIP,int proxyPort,String user){
+   public Socks4Proxy(CProxy p,InetAddress proxyIP,int proxyPort,String user){
       super(p,proxyIP,proxyPort);
       this.user = new String(user);
       version = 4;
@@ -88,7 +88,7 @@ public class Socks4Proxy extends Proxy implements Cloneable{
 //Protected Methods
 //=================
 
-   protected Proxy copy(){
+   protected CProxy copy(){
        Socks4Proxy copy = new Socks4Proxy(proxyIP,proxyPort,user);
        copy.directHosts = this.directHosts;
        copy.chainProxy = chainProxy;

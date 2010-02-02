@@ -5,10 +5,10 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 
 /**
- SOCKS5 Proxy.
+ SOCKS5 CProxy.
 */
 
-public class Socks5Proxy extends Proxy implements Cloneable{
+public class Socks5Proxy extends CProxy implements Cloneable{
 
 //Data members
    private Hashtable authMethods = new Hashtable();
@@ -23,12 +23,12 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 
    /**
      Creates SOCKS5 proxy.
-     @param p Proxy to use to connect to this proxy, allows proxy chaining.
-     @param proxyHost Host on which a Proxy server runs.
-     @param proxyPort Port on which a Proxy server listens for connections.
+     @param p CProxy to use to connect to this proxy, allows proxy chaining.
+     @param proxyHost Host on which a CProxy server runs.
+     @param proxyPort Port on which a CProxy server listens for connections.
      @throws UnknownHostException If proxyHost can't be resolved.
    */
-   public Socks5Proxy(Proxy p,String proxyHost,int proxyPort)
+   public Socks5Proxy(CProxy p,String proxyHost,int proxyPort)
           throws UnknownHostException{ 
       super(p,proxyHost,proxyPort);
       version = 5;
@@ -37,8 +37,8 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 
    /**
      Creates SOCKS5 proxy.
-     @param proxyHost Host on which a Proxy server runs.
-     @param proxyPort Port on which a Proxy server listens for connections.
+     @param proxyHost Host on which a CProxy server runs.
+     @param proxyPort Port on which a CProxy server listens for connections.
      @throws UnknownHostException If proxyHost can't be resolved.
    */
    public Socks5Proxy(String proxyHost,int proxyPort)
@@ -49,11 +49,11 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 
    /**
      Creates SOCKS5 proxy.
-     @param p Proxy to use to connect to this proxy, allows proxy chaining.
-     @param proxyIP Host on which a Proxy server runs.
-     @param proxyPort Port on which a Proxy server listens for connections.
+     @param p CProxy to use to connect to this proxy, allows proxy chaining.
+     @param proxyIP Host on which a CProxy server runs.
+     @param proxyPort Port on which a CProxy server listens for connections.
    */
-   public Socks5Proxy(Proxy p,InetAddress proxyIP,int proxyPort){
+   public Socks5Proxy(CProxy p,InetAddress proxyIP,int proxyPort){
       super(p,proxyIP,proxyPort);
       version = 5;
       setAuthenticationMethod(0,new AuthenticationNone());
@@ -61,8 +61,8 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 
    /**
      Creates SOCKS5 proxy.
-     @param proxyIP Host on which a Proxy server runs.
-     @param proxyPort Port on which a Proxy server listens for connections.
+     @param proxyIP Host on which a CProxy server runs.
+     @param proxyPort Port on which a CProxy server listens for connections.
    */
    public Socks5Proxy(InetAddress proxyIP,int proxyPort){
       this(null,proxyIP,proxyPort);
@@ -126,7 +126,7 @@ public class Socks5Proxy extends Proxy implements Cloneable{
    }
 
    /**
-    Creates a clone of this Proxy.
+    Creates a clone of this CProxy.
    */
    public Object clone(){
       Socks5Proxy newProxy = new Socks5Proxy(proxyIP,proxyPort);
@@ -144,7 +144,7 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 //Protected Methods
 //=================
 
-   protected Proxy copy(){
+   protected CProxy copy(){
        Socks5Proxy copy = new Socks5Proxy(proxyIP,proxyPort);
        copy.authMethods = this.authMethods; //same Hash, no copy
        copy.directHosts = this.directHosts;

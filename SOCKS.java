@@ -171,7 +171,7 @@ public class SOCKS{
    */
    static void proxyInit(Properties props){
       String proxy_list;
-      Proxy proxy = null;
+      CProxy proxy = null;
       StringTokenizer st;
 
       proxy_list = (String) props.get("proxy");
@@ -181,13 +181,13 @@ public class SOCKS{
       while(st.hasMoreTokens()){
          String proxy_entry = st.nextToken();
 
-         Proxy p = Proxy.parseProxy(proxy_entry);
+         CProxy p = CProxy.parseProxy(proxy_entry);
 
          if(p == null)
             exit("Can't parse proxy entry:"+proxy_entry);
         
 
-         inform("Adding Proxy:"+p);
+         inform("Adding CProxy:"+p);
 
          if(proxy != null) 
             p.setChainProxy(proxy);

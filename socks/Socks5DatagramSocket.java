@@ -43,38 +43,38 @@ public class Socks5DatagramSocket extends DatagramSocket{
    /**
       Construct Datagram socket for communication over SOCKS5 proxy
       server. This constructor uses default proxy, the one set with
-      Proxy.setDefaultProxy() method. If default proxy is not set or 
+      CProxy.setDefaultProxy() method. If default proxy is not set or
       it is set to version4 proxy, which does not support datagram
       forwarding, throws SocksException.
 
     */
    public Socks5DatagramSocket() throws SocksException,
                                         IOException{
-      this(Proxy.defaultProxy,0,null);
+      this(CProxy.defaultProxy,0,null);
    }
    /**
       Construct Datagram socket for communication over SOCKS5 proxy
       server. And binds it to the specified local port.
       This constructor uses default proxy, the one set with
-      Proxy.setDefaultProxy() method. If default proxy is not set or 
+      CProxy.setDefaultProxy() method. If default proxy is not set or
       it is set to version4 proxy, which does not support datagram
       forwarding, throws SocksException.
     */
    public Socks5DatagramSocket(int port) throws SocksException,
                                                 IOException{
-      this(Proxy.defaultProxy,port,null);
+      this(CProxy.defaultProxy,port,null);
    }
    /**
       Construct Datagram socket for communication over SOCKS5 proxy
       server. And binds it to the specified local port and address.
       This constructor uses default proxy, the one set with
-      Proxy.setDefaultProxy() method. If default proxy is not set or 
+      CProxy.setDefaultProxy() method. If default proxy is not set or
       it is set to version4 proxy, which does not support datagram
       forwarding, throws SocksException.
     */
    public Socks5DatagramSocket(int port,InetAddress ip) throws SocksException,
                                         IOException{
-      this(Proxy.defaultProxy,port,ip);
+      this(CProxy.defaultProxy,port,ip);
    }
 
    /**
@@ -84,24 +84,24 @@ public class Socks5DatagramSocket extends DatagramSocket{
      Might throw SocksException, if:
      <ol>
       <li> Given version of proxy does not support UDP_ASSOCIATE.
-      <li> Proxy can't be reached.
+      <li> CProxy can't be reached.
       <li> Authorization fails.
-      <li> Proxy does not want to perform udp forwarding, for any reason.
+      <li> CProxy does not want to perform udp forwarding, for any reason.
      </ol>
      Might throw IOException if binding dtagram socket to given address/port
      fails.
      See java.net.DatagramSocket for more details.
     */
-   public Socks5DatagramSocket(Proxy p,int port,InetAddress ip)
+   public Socks5DatagramSocket(CProxy p,int port,InetAddress ip)
                                         throws SocksException,
                                                IOException{
       super(port,ip);
-      if(p == null) throw new SocksException(Proxy.SOCKS_NO_PROXY);
+      if(p == null) throw new SocksException(CProxy.SOCKS_NO_PROXY);
       if(!(p instanceof Socks5Proxy)) 
          throw new SocksException(-1,"Datagram Socket needs Proxy version 5");
 
       if(p.chainProxy != null)
-           throw new SocksException(Proxy.SOCKS_JUST_ERROR,
+           throw new SocksException(CProxy.SOCKS_JUST_ERROR,
                "Datagram Sockets do not support proxy chaining.");
 
       proxy =(Socks5Proxy) p.copy();
@@ -318,7 +318,7 @@ public class Socks5DatagramSocket extends DatagramSocket{
      datagrams being send from this socket. If it was closed, most likely
      datagrams are no longer being forwarded by the server.
      <p>
-     Proxy might decide to stop forwarding datagrams, in which case it
+     CProxy might decide to stop forwarding datagrams, in which case it
      should close primary connection. This method allows to check, wether
      this have been done.
      <p>
@@ -427,8 +427,8 @@ public class Socks5DatagramSocket extends DatagramSocket{
 	     proxyHost =(args.length > 2)? args[2]
 	                                 : defaultProxyHost;
 
-	     Proxy.setDefaultProxy(proxyHost,proxyPort);
-	     Proxy p = Proxy.getDefaultProxy();
+	     CProxy.setDefaultProxy(proxyHost,proxyPort);
+	     CProxy p = CProxy.getDefaultProxy();
 	     p.addDirect("lux");
 
 

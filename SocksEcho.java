@@ -25,7 +25,7 @@ public class SocksEcho extends Frame
    SocksDialog socks_dialog;
 
 //Network related members
-   Proxy proxy=null;
+   CProxy proxy=null;
    int port;
    String host;
    Thread net_thread=null;
@@ -160,7 +160,7 @@ public void run(){
       if(!readPort()) return;
 
       if(proxy == null){
-         warn("Proxy is not set");
+         warn("CProxy is not set");
          onProxy();
          return;
       }
@@ -203,7 +203,7 @@ public void run(){
       if(!readPort()) port = 0;
 
       if(proxy == null){
-         warn("Proxy is not set");
+         warn("CProxy is not set");
          onProxy();
          return;
       }
@@ -223,7 +223,7 @@ public void run(){
       }else if(mode == ABORT_MODE) return;
 
       if(proxy == null){
-         warn("Proxy is not set");
+         warn("CProxy is not set");
          onProxy();
          return;
       }
@@ -267,7 +267,7 @@ public void run(){
       output_textarea.setText("");
    }
    private void onProxy(){
-      Proxy p;
+      CProxy p;
       p = socks_dialog.getProxy(proxy);
       if(p != null) proxy = p;
       if( proxy != null && proxy instanceof Socks5Proxy) 
@@ -373,7 +373,7 @@ public void run(){
      println("Connected to:"+sock.getInetAddress()+":"+port);
      status("Connected to: "+sock.getInetAddress().getHostAddress()
                        +":" +port);
-     println("Via-Proxy:"+sock.getLocalAddress()+":"+
+     println("Via-CProxy:"+sock.getLocalAddress()+":"+
                           sock.getLocalPort());
 
    }
@@ -415,7 +415,7 @@ public void run(){
    
    private void sendUDP(String message,String host,int port){
       if(!udp_sock.isProxyAlive(100)){
-         status("Proxy closed connection");
+         status("CProxy closed connection");
          abort_connection();
          return;
       }
@@ -543,7 +543,7 @@ public void run(){
       c.gridx=0; c.gridy=4;
       c.gridwidth=1; c.gridheight=1;
       c.anchor=GridBagConstraints.NORTHWEST;
-      proxy_button = new Button("Proxy...");
+      proxy_button = new Button("CProxy...");
       container.add(proxy_button,c);
       
       c.gridx=3; c.gridy=4;

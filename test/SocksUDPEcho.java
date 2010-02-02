@@ -1,3 +1,5 @@
+package test;
+
 import java.net.*;
 import java.io.*;
 import socks.*;
@@ -40,8 +42,8 @@ public class SocksUDPEcho{
 	     proxyHost =(args.length > 2)? args[2]
 	                                 : defaultProxyHost;
 
-	     Proxy.setDefaultProxy(proxyHost,proxyPort);
-	     Proxy p = Proxy.getDefaultProxy();
+	     CProxy.setDefaultProxy(proxyHost,proxyPort);
+	     CProxy p = CProxy.getDefaultProxy();
 	     p.addDirect("lux");
 
 

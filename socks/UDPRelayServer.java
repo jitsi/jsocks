@@ -25,7 +25,7 @@ class UDPRelayServer implements Runnable{
     long lastReadTime;
 
     static PrintStream log = null;
-    static Proxy proxy = null;
+    static CProxy proxy = null;
     static int datagramSize = 0xFFFF;//64K, a bit more than max udp size
     static int iddleTimeout = 180000;//3 minutes
 
