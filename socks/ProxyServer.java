@@ -315,29 +315,50 @@ public class ProxyServer implements Runnable{
       sendErrorMessage(error_code);
    }
 
-   private void onConnect(ProxyMessage msg) throws IOException{
-      Socket s;
-      ProxyMessage response = null;
+    private void onConnect(ProxyMessage msg) throws IOException {
+        Socket s = null;
+        ProxyMessage response = null;
+        int iSock5Cmd = CProxy.SOCKS_FAILURE;    //defaulting to failure
+        int iSock4Msg = Socks4Message.REPLY_NO_CONNECT;
+        InetAddress sIp = null; int iPort = 0;
 
-      if(proxy == null)
-         s = new Socket(msg.ip,msg.port);
-      else
-         s = new SocksSocket(proxy,msg.ip,msg.port);
+        try {
+            if (proxy == null) {
+                s = new Socket(msg.ip, msg.port);
+            } else {
+                s = new SocksSocket(proxy, msg.ip, msg.port);
+            }
+            log("Connected to " + s.getInetAddress() + ":" + s.getPort());
 
-      log("Connected to "+s.getInetAddress()+":"+s.getPort());
+            iSock5Cmd = CProxy.SOCKS_SUCCESS; iSock4Msg = Socks4Message.REPLY_OK;
+            sIp = s.getInetAddress(); iPort = s.getPort();
 
-      if(msg instanceof Socks5Message){
-        response = new Socks5Message(CProxy.SOCKS_SUCCESS,
-                                         s.getLocalAddress(),
-                                         s.getLocalPort());
-      }else{
-        response = new Socks4Message(Socks4Message.REPLY_OK,
-                                     s.getLocalAddress(),s.getLocalPort());
+        }
+        catch (Exception sE) {
+            log("Failed connecting to remote socket. Exception: " + sE.getLocalizedMessage());
 
-      }
-      response.write(out);
-      startPipe(s);
-   }
+            //TBD Pick proper socks error for corresponding socket error, below is too generic
+            iSock5Cmd = CProxy.SOCKS_CONNECTION_REFUSED; iSock4Msg = Socks4Message.REPLY_NO_CONNECT;
+        }
+
+        if (msg instanceof Socks5Message) {
+            response = new Socks5Message(iSock5Cmd, sIp, iPort);
+        } else {
+            response = new Socks4Message(iSock4Msg, sIp, iPort);
+        }
+
+        response.write(out);
+
+        if (s != null) {
+            startPipe(s);
+        }
+        else {
+            throw (new RuntimeException("onConnect() Failed to create Socket()"));
+        }
+
+        return;
+    }
+
 
    private void onBind(ProxyMessage msg) throws IOException{
       ProxyMessage response = null;
