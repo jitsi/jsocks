@@ -9,7 +9,7 @@ public class SOCKS{
    static public void usage(){
       System.out.println(
       "Usage: java SOCKS [inifile1 inifile2 ...]\n"+
-      "If none inifile is given, uses socks.properties.\n"
+      "If no inifile is given, uses socks.properties.\n"
       );
    }
 
@@ -32,34 +32,41 @@ public class SOCKS{
       }
 
 
-      inform("Loading properties");
+      Properties pr = null;
+      inform("Loading properties...");
       for(int i=0;i<file_names.length;++i){
 
-         inform("Reading file "+file_names[i]);
+         inform("Reading file: "+file_names[i]);
 
-         Properties pr = loadProperties(file_names[i]);
+         pr = loadProperties(file_names[i]);
          if(pr==null){
-           System.err.println("Loading of properties from "+
-                               file_names[i]+"failed.");
-           usage();
-           return;
+             if (args.length == 0) {
+                 inform("Using default property values.");
+                 pr = load_defaults();
+             }
+             else {
+                continue;
+             }
          }
+
          if(!addAuth(auth,pr)){
            System.err.println("Error in file "+file_names[i]+".");
-           usage();
-           return;
+           pr = null;
+           continue;
          }
          //First file should contain all global settings,
          // like port and host and log.
          if(i==0){
            String port_s = (String) pr.get("port");
-           if(port_s != null)
+           if(port_s != null) {
               try{
                 port = Integer.parseInt(port_s);
               }catch(NumberFormatException nfe){
                 System.err.println("Can't parse port: "+port_s);
-                return;
+                pr = null;
+                break;
               }
+             }
 
            serverInit(pr);
            logFile = (String) pr.get("log");
@@ -69,29 +76,42 @@ public class SOCKS{
          //inform("Props:"+pr);
       }
 
+      if (pr == null) {
+          System.err.println("Failed to open/parse properties file.\n");
+          usage();
+          return;
+      }
+
+
       if(logFile!=null){
-        if(logFile.equals("-"))
+        if(logFile.equals("-")) {
            log = System.out;
-        else
+          }
+        else {
            try{
              log = new FileOutputStream(logFile);
            }catch(IOException ioe){
              System.err.println("Can't open log file "+logFile);
              return;
            }
+          }
       }
-      if(host!=null)
+
+      if(host!=null) {
          try{
            localIP = InetAddress.getByName(host);
          }catch(UnknownHostException uhe){
            System.err.println("Can't resolve local ip: "+host);
            return;
          }
+       }
 
 
       inform("Using Ident Authentication scheme:\n"+auth+"\n");
       ProxyServer server = new ProxyServer(auth);
       server.setLog(log);
+      inform("JSocks Proxy Server started. Listening on port: "+port);
+      
       server.start(port,5,localIP);
    }
 
@@ -104,7 +124,8 @@ public class SOCKS{
          pr.load(fin);
          fin.close();
       }catch(IOException ioe){
-         return null;
+         System.err.println("loadProperties("+file_name+") failed: "+ioe.getLocalizedMessage());
+         pr = null;
       }
       return pr;
    }
@@ -250,4 +271,20 @@ public class SOCKS{
       System.err.println("Aborting operation");
       System.exit(0);
    }
+
+    private static Properties load_defaults() {
+        Properties sRet = new Properties();
+
+        sRet.setProperty("port", "1080");
+
+        sRet.setProperty("range", ".");
+
+        sRet.setProperty("iddleTimeout", "600000");
+        sRet.setProperty("acceptTimeout", "60000");
+        sRet.setProperty("udpTimeout", "600000");
+
+        sRet.setProperty("log", "-");
+
+        return sRet;
+    }
 }
