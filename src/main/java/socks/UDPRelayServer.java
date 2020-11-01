@@ -1,4 +1,6 @@
 package socks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import socks.server.*;
 import java.net.*;
 import java.io.*;
@@ -7,7 +9,7 @@ import java.io.*;
  UDP Relay server, used by ProxyServer to perform udp forwarding.
 */
 class UDPRelayServer implements Runnable{
-
+    private static final Logger log = LoggerFactory.getLogger(UDPRelayServer.class);
 
     DatagramSocket client_sock; 
     DatagramSocket remote_sock;
@@ -24,7 +26,6 @@ class UDPRelayServer implements Runnable{
 
     long lastReadTime;
 
-    static PrintStream log = null;
     static CProxy proxy = null;
     static int datagramSize = 0xFFFF;//64K, a bit more than max udp size
     static int iddleTimeout = 180000;//3 minutes
@@ -112,9 +113,10 @@ class UDPRelayServer implements Runnable{
        remote_sock.setSoTimeout(iddleTimeout);
        client_sock.setSoTimeout(iddleTimeout);
 
-       log("Starting UDP relay server on "+relayIP+":"+relayPort);
-       log("Remote socket "+remote_sock.getLocalAddress()+":"+
-                            remote_sock.getLocalPort());
+       log.info("Starting UDP relay server on {}:{}, Remote socket {}:{}",
+           relayIP, relayPort,
+           remote_sock.getLocalAddress(), remote_sock.getLocalPort()
+       );
 
        pipe_thread1 = new Thread(this,"pipe1");
        pipe_thread2 = new Thread(this,"pipe2");
@@ -147,7 +149,7 @@ class UDPRelayServer implements Runnable{
        }catch(IOException ioe){
        }finally{
           abort();
-          log("UDP Pipe thread "+Thread.currentThread().getName()+" stopped.");
+          log.info("UDP Pipe thread {} stopped.", Thread.currentThread().getName());
        }
 
     }
@@ -157,7 +159,7 @@ class UDPRelayServer implements Runnable{
     private synchronized void abort(){
        if(pipe_thread1 == null) return;
 
-       log("Aborting UDP Relay Server");
+       log.info("Aborting UDP Relay Server");
 
        remote_sock.close();
        client_sock.close();
@@ -171,14 +173,6 @@ class UDPRelayServer implements Runnable{
        pipe_thread2.interrupt();
 
        pipe_thread1 = null;
-    }
-
-
-    static private void log(String s){
-      if(log != null){
-        log.println(s);
-        log.flush();
-      }
     }
 
     private void pipe(DatagramSocket from,DatagramSocket to,boolean out)
@@ -195,7 +189,7 @@ class UDPRelayServer implements Runnable{
                to.send(dp);
 
           }catch(UnknownHostException uhe){
-            log("Dropping datagram for unknown host");
+            log.warn("Dropping datagram for unknown host");
           }catch(InterruptedIOException iioe){
             //log("Interrupted: "+iioe);
             //If we were interrupted by other thread.

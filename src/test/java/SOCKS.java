@@ -109,7 +109,6 @@ public class SOCKS{
 
       inform("Using Ident Authentication scheme:\n"+auth+"\n");
       ProxyServer server = new ProxyServer(auth);
-      server.setLog(log);
       inform("JSocks Proxy Server started. Listening on port: "+port);
       
       server.start(port,5,localIP);

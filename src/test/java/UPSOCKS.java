@@ -33,7 +33,6 @@ public class UPSOCKS implements UserValidation{
         UserPasswordAuthenticator auth = new UserPasswordAuthenticator(us);
         ProxyServer server = new ProxyServer(auth);
 
-        server.setLog(System.out);
         server.start(1080);
     }
 }
