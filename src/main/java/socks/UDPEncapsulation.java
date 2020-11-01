@@ -1,4 +1,7 @@
 package socks;
+
+import java.io.IOException;
+
 /**
  This interface provides for datagram encapsulation for SOCKSv5 protocol.
  <p>
@@ -19,11 +22,11 @@ public interface UDPEncapsulation{
     @param out  Wether the data is being send out. If true method should 
                 encapsulate/encrypt data, otherwise it should decapsulate/
                 decrypt data.
-    @throw IOException if for some reason data can be transformed correctly.
+    @throws IOException if for some reason data can be transformed correctly.
     @return Should return byte array containing data after transformation.
             It is possible to return same array as input, if transformation
             only involves bit mangling, and no additional data is being
             added or removed.
     */
-    byte[] udpEncapsulate(byte[] data, boolean out) throws java.io.IOException;
+    byte[] udpEncapsulate(byte[] data, boolean out) throws IOException;
 }

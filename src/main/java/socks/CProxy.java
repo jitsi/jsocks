@@ -159,7 +159,7 @@ public abstract class CProxy{
 
     /**
        Get string representation of this proxy.
-     * @returns string in the form:proxyHost:proxyPort \t Version versionNumber
+     * @return string in the form:proxyHost:proxyPort \t Version versionNumber
      */
     public String toString(){
        return (""+proxyIP.getHostName()+":"+proxyPort+"\tVersion "+version);

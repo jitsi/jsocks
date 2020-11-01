@@ -20,7 +20,7 @@ public class UserPasswordAuthenticator extends  ServerAuthenticatorNone{
     Construct a new UserPasswordAuthentication object, with given
     UserVlaidation scheme.
 
-    @param v UserValidation to use for validating users.
+    @param validator UserValidation to use for validating users.
    */
    public UserPasswordAuthenticator(UserValidation validator){
       this.validator = validator;

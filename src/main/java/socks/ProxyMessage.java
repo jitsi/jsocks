@@ -52,7 +52,7 @@ public abstract class ProxyMessage{
      request from given stream.
      
      @param in Input stream to read response from.
-     @param clinetMode If true read server response, else read client request.
+     @param client_mode If true read server response, else read client request.
      @throws SocksException If server response code is not SOCKS_SUCCESS(0) and
      reading in client mode, or if any error with protocol occurs.
      @throws IOException If any error happens with I/O.
