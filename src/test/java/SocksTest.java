@@ -1,4 +1,3 @@
-package test;
 import java.net.*;
 import java.io.*;
 import socks.*;
