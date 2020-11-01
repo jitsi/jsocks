@@ -1,0 +1,34 @@
+name: Java CI with Maven
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1.2.0
+      - name: Set up JDK
+        uses: actions/setup-java@v1.3.0
+        with:
+          java-version: 8
+          server-id: ossrh
+          server-username: SONATYPE_USER
+          server-password: SONATYPE_PW
+
+      - name: Build
+        run: mvn -B package
+
+      - name: Release to Maven Central
+        if: ${{ github.ref }} == 'refs/heads/master'
+        env:
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_PW: ${{ secrets.SONATYPE_PW }}
+        run: |
+          cat <(echo -e "${{ secrets.GPG_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            -Dgpg.passphrase="${{ secrets.GPG_PW }}" \
+            -DperformRelease=true \
+            deploy
