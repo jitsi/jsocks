@@ -10,6 +10,13 @@
     <version>1.0.1-jitsi-1</version>
     <url>https://github.com/jitsi/jsocks</url>
 
+    <name>jsocks</name>
+    <description>
+        SOCKS Server and Library for Java. Support for versions 4 and 5 of SOCKS protocol. Designed
+        to be easily expandable to support different encryption/authentication/authorization
+        methods. Sample server and client are available.
+    </description>
+
     <licenses>
         <license>
             <name>LGPL-2.0-only</name>
